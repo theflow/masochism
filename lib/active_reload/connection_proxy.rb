@@ -98,8 +98,9 @@ module ActiveReload
 
     # Send observed_method(object) if the method exists.
     def update_with_masterdb(observed_method, object) #:nodoc:
-      if object.class.connection.respond_to?(:with_master)
-        object.class.connection.with_master do
+      my_connection = object.respond_to?(:descends_from_active_record?) && !object.descends_from_active_record? ? object.superclass.connection : object.connection
+      if my_connection.respond_to?(:with_master)
+        my_connection.with_master do
           update_without_masterdb(observed_method, object)
         end
       else
