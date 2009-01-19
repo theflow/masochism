@@ -1,7 +1,7 @@
 module ActiveReload
   class MasterDatabase < ActiveRecord::Base
     self.abstract_class = true
-    establish_connection configurations[Rails.env]['master_database'] || configurations['master_database'] || Rails.env
+    establish_connection configurations[RAILS_ENV]['master_database'] || configurations['master_database'] || RAILS_ENV
   end
 
   class SlaveDatabase < ActiveRecord::Base
@@ -9,7 +9,7 @@ module ActiveReload
     def self.name
       ActiveRecord::Base.name
     end
-    establish_connection configurations[Rails.env]['slave_database'] || Rails.env
+    establish_connection configurations[RAILS_ENV]['slave_database'] || RAILS_ENV
   end
 
   class ConnectionProxy
@@ -30,7 +30,7 @@ module ActiveReload
     end
 
     def self.slave_defined?
-      ActiveRecord::Base.configurations[Rails.env]['slave_database']
+      ActiveRecord::Base.configurations[RAILS_ENV]['slave_database']
     end
 
     def self.setup_for(master, slave = nil)
